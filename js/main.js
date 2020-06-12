@@ -80,7 +80,7 @@ var renderPicture = function (picture) {
 
   pictureElement.querySelector('.picture__img').src = picture.url;
   pictureElement.querySelector('.picture__likes').textContent = picture.likes;
-  pictureElement.querySelector('.picture__comments').textContent = picture.comments;
+  pictureElement.querySelector('.picture__comments').textContent = getRandomInRange(AmountComments.MIN, AmountComments.MAX);
   return pictureElement;
 };
 
@@ -125,10 +125,71 @@ var init = function () {
   var pictures = generateRandomObjects();
   drewPicture(pictures);
   renderBigPicture(pictures[0]);
-  bigPicture.classList.remove('hidden');
+  // bigPicture.classList.remove('hidden');
   socialCommentCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
-  document.body.classList.add('modal-open');
+  // document.body.classList.add('modal-open');
 };
 
 init();
+
+// -------- Загрузка изображения и показ формы редактирования --------
+
+var form = document.querySelector('.img-upload__form');
+var openFormButton = document.querySelector('#upload-file');
+var closeFormCross = document.querySelector('#upload-cancel');
+var formEditImage = document.querySelector('.img-upload__overlay');
+
+
+openFormButton.addEventListener('change', function () {
+  formEditImage.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape') {
+      formEditImage.classList.add('hidden');
+      form.reset();
+    }
+  });
+});
+
+closeFormCross.addEventListener('click', function () {
+  formEditImage.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+});
+
+// -------- Применение эффекта для изображения и редактирование размера изображения --------
+
+var effectsList = document.querySelector('.effects__list');
+var imgPreview = formEditImage.querySelector('.img-upload__preview');
+var image = formEditImage.querySelector('.img-upload__preview img');
+var currentEffect = '';
+var scaleValue = formEditImage.querySelector('.scale__control--value');
+var scaleSmaller = formEditImage.querySelector('.scale__control--smaller');
+var scaleBigger = formEditImage.querySelector('.scale__control--bigger');
+var scaleValueNumber = 100;
+var scaleNumber = 1;
+
+effectsList.addEventListener('change', function (evt) {
+  var required = 'effects__preview--' + evt.target.value;
+  if (currentEffect) {
+    imgPreview.classList.remove(currentEffect);
+  }
+  imgPreview.classList.add(required);
+  currentEffect = required;
+});
+
+
+if (scaleValueNumber >= 0 && scaleValueNumber <= 100) {
+  scaleValue.value = scaleValueNumber + '%';
+
+  scaleSmaller.addEventListener('click', function () {
+    scaleValueNumber -= 25;
+    scaleNumber -= 0.25;
+    image.style.transform = 'scale(' + scaleNumber + ')';
+  });
+  scaleBigger.addEventListener('click', function () {
+    scaleValueNumber += 25;
+    scaleNumber += 0.25;
+    image.style.transform = 'scale(' + scaleNumber + ')';
+  });
+}
