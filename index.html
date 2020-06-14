@@ -59,7 +59,7 @@
                   <fieldset class="img-upload__effect-level  effect-level">
                     <input class="effect-level__value" type="number" name="effect-level" value="20">
                     <div class="effect-level__line">
-                      <div class="effect-level__pin" tabindex="0">Кнопка изменения глубины эффекта фотографии</div>
+                      <div class="effect-level__pin" tabindex="1">Кнопка изменения глубины эффекта фотографии</div>
                       <div class="effect-level__depth">Глубина эффекта фотографии</div>
                     </div>
                   </fieldset>
@@ -118,7 +118,7 @@
 
                 <!-- Добавление хэш-тегов и комментария к изображению -->
                 <fieldset class="img-upload__text text">
-                  <input class="text__hashtags" name="hashtags" placeholder="#ХэшТег" minlength="2" maxlength="25">
+                  <input class="text__hashtags" name="hashtags" placeholder="#ХэшТег" maxlength="104">
                   <textarea class="text__description" name="description" placeholder="Ваш комментарий..." maxlength="140"></textarea>
                 </fieldset>
 
@@ -140,7 +140,7 @@
       <div class="big-picture__preview">
 
         <!-- Просмотр изображения -->
-        <div class="big-picture__img">
+        <div class="big-picture__img" tabindex="0">
           <img src="img/logo-background-3.jpg" alt="Девушка в купальнике" width="600" height="600">
         </div>
 
