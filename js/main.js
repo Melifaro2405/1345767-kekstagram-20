@@ -80,7 +80,7 @@ var renderPicture = function (picture) {
 
   pictureElement.querySelector('.picture__img').src = picture.url;
   pictureElement.querySelector('.picture__likes').textContent = picture.likes;
-  pictureElement.querySelector('.picture__comments').textContent = picture.comments;
+  pictureElement.querySelector('.picture__comments').textContent = getRandomInRange(AmountComments.MIN, AmountComments.MAX);
   return pictureElement;
 };
 
@@ -125,10 +125,163 @@ var init = function () {
   var pictures = generateRandomObjects();
   drewPicture(pictures);
   renderBigPicture(pictures[0]);
-  bigPicture.classList.remove('hidden');
+  // bigPicture.classList.remove('hidden');
   socialCommentCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
-  document.body.classList.add('modal-open');
+  // document.body.classList.add('modal-open');
 };
 
 init();
+
+// -------- Загрузка изображения и показ формы редактирования --------
+
+var form = document.querySelector('.img-upload__form');
+var openFormButton = document.querySelector('#upload-file');
+var closeFormCross = document.querySelector('#upload-cancel');
+var formEditImage = document.querySelector('.img-upload__overlay');
+
+
+openFormButton.addEventListener('change', function () {
+  scaleValue.value = scaleValueNumber + '%';
+  formEditImage.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape' && inputHashtags !== document.activeElement && textDescription !== document.activeElement) {
+      formEditImage.classList.add('hidden');
+      form.reset();
+    }
+  });
+});
+
+closeFormCross.addEventListener('click', function () {
+  formEditImage.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+});
+
+// -------- Применение эффекта для изображения и редактирование размера изображения --------
+
+var effectsList = document.querySelector('.effects__list');
+var imgPreview = formEditImage.querySelector('.img-upload__preview');
+var image = formEditImage.querySelector('.img-upload__preview img');
+var currentEffect = '';
+var scaleValue = formEditImage.querySelector('.scale__control--value');
+var scaleSmaller = formEditImage.querySelector('.scale__control--smaller');
+var scaleBigger = formEditImage.querySelector('.scale__control--bigger');
+var scaleValueNumber = 100;
+
+effectsList.addEventListener('change', function (evt) {
+  var required = 'effects__preview--' + evt.target.value;
+  if (currentEffect) {
+    imgPreview.classList.remove(currentEffect);
+  }
+  imgPreview.classList.add(required);
+  currentEffect = required;
+});
+
+var lessScale = function () {
+  if (scaleValueNumber > 0 && scaleValueNumber <= 100) {
+    scaleValueNumber -= 25;
+    image.style.transform = 'scale(' + (scaleValueNumber / 100) + ')';
+    scaleValue.value = scaleValueNumber + '%';
+  }
+};
+
+var moreScale = function () {
+  if (scaleValueNumber >= 0 && scaleValueNumber < 100) {
+    scaleValueNumber += 25;
+    image.style.transform = 'scale(' + (scaleValueNumber / 100) + ')';
+    scaleValue.value = scaleValueNumber + '%';
+  }
+};
+
+scaleSmaller.addEventListener('click', function () {
+  lessScale();
+});
+
+scaleBigger.addEventListener('click', function () {
+  moreScale();
+});
+
+// -------- Валидация хеш-тегов --------
+
+var inputHashtags = formEditImage.querySelector('.text__hashtags');
+var textDescription = formEditImage.querySelector('.text__description');
+var submitImgForm = formEditImage.querySelector('.img-upload__submit');
+var stopSubmit; // переменная для прекращения отправки формы
+var MAX_QUANTITY_HASHTAGS = 5;
+var MIN_HASHTAG_LENGTH = 2;
+var MAX_HASHTAG_LENGTH = 20;
+var MAX_COMMENT_LENGTH = 140;
+
+inputHashtags.addEventListener('input', function () {
+  var arrHashtags = inputHashtags.value.split(' '); // формируем массив из хэштегов
+
+  inputHashtags.setCustomValidity(''); // очищаем сообщение об ошибке
+  stopSubmit = false;
+
+  var pattern = /^#[a-zA-Zа-яА-ЯёЁ0-9]{2,20}$/; // регулярное выражение для проверки валидации хэштега
+
+  if (arrHashtags.length > MAX_QUANTITY_HASHTAGS) { // проверям количество ввведенных хэштегов
+    stopSubmit = true;
+    inputHashtags.setCustomValidity('Количество хэштегов не должно быть больше ' + MAX_QUANTITY_HASHTAGS);
+  }
+
+  for (var i = 0; i < arrHashtags.length; i++) { // проверяем соответствие шаблону ^#[a-zA-Zа-яА-ЯёЁ0-9]{2,20}$
+    var hashtag = arrHashtags[i];
+    if (!pattern.test(hashtag)) {
+      stopSubmit = true;
+      inputHashtags.setCustomValidity('Хэштег "' + hashtag + '" должен соответствовать шаблону: символ #, за которым следуют любые не специальные символы (от двух до 20-и) без пробелов)');
+    }
+  }
+
+  var sortedHashtags = arrHashtags.slice().sort(); // сортируем и проверям хэштеги на совпадение
+  for (var j = 0; j < sortedHashtags.length; j++) {
+    if (sortedHashtags[j] === sortedHashtags[j + 1]) {
+      stopSubmit = true;
+      inputHashtags.setCustomValidity('Необходимо удалить хэштег ' + sortedHashtags[j] + ' т.к. он уже используется');
+    }
+  }
+});
+
+textDescription.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Escape' && textDescription.onfocus) {
+    formEditImage.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+  }
+});
+
+// если хотя бы одна проверка не пройдена, прервать отправление формы:
+submitImgForm.addEventListener('submit', function (evt) {
+  if (stopSubmit) {
+    evt.preventDefault();
+    return;
+  }
+});
+
+inputHashtags.addEventListener('invalid', function () {
+  if (inputHashtags.validity.tooShort) {
+    inputHashtags.setCustomValidity('Хэштег должен состоять минимум из 2-х символов');
+  } else if (inputHashtags.validity.tooLong) {
+    inputHashtags.setCustomValidity('Хэштег не должен превышать 20-ти символов');
+  } else {
+    inputHashtags.setCustomValidity('');
+  }
+});
+
+inputHashtags.addEventListener('input', function () {
+  if (inputHashtags.value.length < MIN_HASHTAG_LENGTH) {
+    inputHashtags.setCustomValidity('Имя должно состоять минимум из ' + MIN_HASHTAG_LENGTH + ' символов');
+  } else if (inputHashtags.value.length > MAX_HASHTAG_LENGTH) {
+    inputHashtags.setCustomValidity('Имя должно состоять максимум из ' + MAX_HASHTAG_LENGTH + ' символов');
+  } else {
+    inputHashtags.setCustomValidity('');
+  }
+});
+
+textDescription.addEventListener('input', function () {
+  if (textDescription.value.length > MAX_HASHTAG_LENGTH) {
+    textDescription.setCustomValidity('Имя должно состоять максимум из ' + MAX_COMMENT_LENGTH + ' символов');
+  } else {
+    textDescription.setCustomValidity('');
+  }
+});
