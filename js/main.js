@@ -20,6 +20,7 @@ var pictureTemplate = document.querySelector('#picture')
   .content
   .querySelector('.picture');
 var bigPicture = document.querySelector('.big-picture');
+var closeBigPicture = bigPicture.querySelector('.big-picture__cancel');
 var socialCommentCount = document.querySelector('.social__comment-count');
 var commentsLoader = document.querySelector('.comments-loader');
 
@@ -74,6 +75,15 @@ var generateRandomObjects = function () {
 };
 
 // -------- отрисовываем превью фото с адресом, лайками и комментариями --------
+var openPopupBigPicture = function () {
+  bigPicture.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+};
+
+var closePopupBigPicture = function () {
+  bigPicture.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+};
 
 var renderPicture = function (picture) {
   var pictureElement = pictureTemplate.cloneNode(true);
@@ -81,6 +91,12 @@ var renderPicture = function (picture) {
   pictureElement.querySelector('.picture__img').src = picture.url;
   pictureElement.querySelector('.picture__likes').textContent = picture.likes;
   pictureElement.querySelector('.picture__comments').textContent = getRandomInRange(AmountComments.MIN, AmountComments.MAX);
+  pictureElement.addEventListener('click', function () {
+    renderBigPicture(picture);
+  });
+  closeBigPicture.addEventListener('click', function () {
+    closePopupBigPicture();
+  });
   return pictureElement;
 };
 
@@ -118,17 +134,20 @@ var renderBigPicture = function (picture) {
     bigPicture.querySelector('.social__comments').innerHTML = '';
   }
   bigPicture.querySelector('.social__comments').appendChild(fragment);
-  return bigPicture;
+  openPopupBigPicture();
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape') {
+      closePopupBigPicture();
+    }
+  });
 };
 
 var init = function () {
   var pictures = generateRandomObjects();
   drewPicture(pictures);
-  renderBigPicture(pictures[0]);
-  // bigPicture.classList.remove('hidden');
   socialCommentCount.classList.add('hidden');
   commentsLoader.classList.add('hidden');
-  // document.body.classList.add('modal-open');
 };
 
 init();
@@ -146,9 +165,11 @@ openFormButton.addEventListener('change', function () {
   formEditImage.classList.remove('hidden');
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape' && inputHashtags !== document.activeElement && textDescription !== document.activeElement) {
+    if (evt.key === 'Escape' && currentEffect && inputHashtags !== document.activeElement && textDescription !== document.activeElement) {
       formEditImage.classList.add('hidden');
       form.reset();
+      imgPreview.classList.remove(currentEffect);
+      defaultScale();
     }
   });
 });
@@ -156,6 +177,10 @@ openFormButton.addEventListener('change', function () {
 closeFormCross.addEventListener('click', function () {
   formEditImage.classList.add('hidden');
   document.body.classList.remove('modal-open');
+  if (currentEffect) {
+    imgPreview.classList.remove(currentEffect);
+  }
+  defaultScale();
 });
 
 // -------- Применение эффекта для изображения и редактирование размера изображения --------
@@ -167,7 +192,8 @@ var currentEffect = '';
 var scaleValue = formEditImage.querySelector('.scale__control--value');
 var scaleSmaller = formEditImage.querySelector('.scale__control--smaller');
 var scaleBigger = formEditImage.querySelector('.scale__control--bigger');
-var scaleValueNumber = 100;
+var MAX_SCALE = 100;
+var scaleValueNumber = MAX_SCALE;
 
 effectsList.addEventListener('change', function (evt) {
   var required = 'effects__preview--' + evt.target.value;
@@ -194,6 +220,12 @@ var moreScale = function () {
   }
 };
 
+var defaultScale = function () {
+  image.style.transform = 'scale(1)';
+  scaleValueNumber = MAX_SCALE;
+  scaleValue.value = scaleValueNumber + '%';
+};
+
 scaleSmaller.addEventListener('click', function () {
   lessScale();
 });
@@ -206,82 +238,31 @@ scaleBigger.addEventListener('click', function () {
 
 var inputHashtags = formEditImage.querySelector('.text__hashtags');
 var textDescription = formEditImage.querySelector('.text__description');
-var submitImgForm = formEditImage.querySelector('.img-upload__submit');
-var stopSubmit; // переменная для прекращения отправки формы
+var submitForm = formEditImage.querySelector('.img-upload__submit');
 var MAX_QUANTITY_HASHTAGS = 5;
-var MIN_HASHTAG_LENGTH = 2;
 var MAX_HASHTAG_LENGTH = 20;
-var MAX_COMMENT_LENGTH = 140;
 
-inputHashtags.addEventListener('input', function () {
-  var arrHashtags = inputHashtags.value.split(' '); // формируем массив из хэштегов
-
-  inputHashtags.setCustomValidity(''); // очищаем сообщение об ошибке
-  stopSubmit = false;
-
+submitForm.addEventListener('click', function () {
+  var arrHashtags = inputHashtags.value.toLowerCase().split(' '); // формируем массив из хэштегов
   var pattern = /^#[a-zA-Zа-яА-ЯёЁ0-9]{2,20}$/; // регулярное выражение для проверки валидации хэштега
+  var sortedHashtags = arrHashtags.slice().sort(); // сортируем и проверям хэштеги на совпадение
 
   if (arrHashtags.length > MAX_QUANTITY_HASHTAGS) { // проверям количество ввведенных хэштегов
-    stopSubmit = true;
     inputHashtags.setCustomValidity('Количество хэштегов не должно быть больше ' + MAX_QUANTITY_HASHTAGS);
   }
 
-  for (var i = 0; i < arrHashtags.length; i++) { // проверяем соответствие шаблону ^#[a-zA-Zа-яА-ЯёЁ0-9]{2,20}$
-    var hashtag = arrHashtags[i];
-    if (!pattern.test(hashtag)) {
-      stopSubmit = true;
-      inputHashtags.setCustomValidity('Хэштег "' + hashtag + '" должен соответствовать шаблону: символ #, за которым следуют любые не специальные символы (от двух до 20-и) без пробелов)');
-    }
-  }
-
-  var sortedHashtags = arrHashtags.slice().sort(); // сортируем и проверям хэштеги на совпадение
   for (var j = 0; j < sortedHashtags.length; j++) {
-    if (sortedHashtags[j] === sortedHashtags[j + 1]) {
-      stopSubmit = true;
-      inputHashtags.setCustomValidity('Необходимо удалить хэштег ' + sortedHashtags[j] + ' т.к. он уже используется');
+    var hashtag = sortedHashtags[j];
+    if (hashtag === sortedHashtags[j + 1]) { // проверяем на одинаковые хэштеги
+      inputHashtags.setCustomValidity('Необходимо удалить хэштег ' + hashtag + ' т.к. он уже используется');
     }
-  }
-});
-
-textDescription.addEventListener('keydown', function (evt) {
-  if (evt.key === 'Escape' && textDescription.onfocus) {
-    formEditImage.classList.remove('hidden');
-    document.body.classList.add('modal-open');
-  }
-});
-
-// если хотя бы одна проверка не пройдена, прервать отправление формы:
-submitImgForm.addEventListener('submit', function (evt) {
-  if (stopSubmit) {
-    evt.preventDefault();
-    return;
-  }
-});
-
-inputHashtags.addEventListener('invalid', function () {
-  if (inputHashtags.validity.tooShort) {
-    inputHashtags.setCustomValidity('Хэштег должен состоять минимум из 2-х символов');
-  } else if (inputHashtags.validity.tooLong) {
-    inputHashtags.setCustomValidity('Хэштег не должен превышать 20-ти символов');
-  } else {
-    inputHashtags.setCustomValidity('');
-  }
-});
-
-inputHashtags.addEventListener('input', function () {
-  if (inputHashtags.value.length < MIN_HASHTAG_LENGTH) {
-    inputHashtags.setCustomValidity('Имя должно состоять минимум из ' + MIN_HASHTAG_LENGTH + ' символов');
-  } else if (inputHashtags.value.length > MAX_HASHTAG_LENGTH) {
-    inputHashtags.setCustomValidity('Имя должно состоять максимум из ' + MAX_HASHTAG_LENGTH + ' символов');
-  } else {
-    inputHashtags.setCustomValidity('');
-  }
-});
-
-textDescription.addEventListener('input', function () {
-  if (textDescription.value.length > MAX_HASHTAG_LENGTH) {
-    textDescription.setCustomValidity('Имя должно состоять максимум из ' + MAX_COMMENT_LENGTH + ' символов');
-  } else {
-    textDescription.setCustomValidity('');
+    if (hashtag.length > MAX_HASHTAG_LENGTH) { // проверяем длину одного хэштега
+      inputHashtags.setCustomValidity('Количество символов в хэштеге не должно превышать ' + MAX_HASHTAG_LENGTH);
+    }
+    if (!pattern.test(hashtag)) {
+      inputHashtags.setCustomValidity('Хэштег "' + hashtag + '" должен соответствовать шаблону: символ #, за которым следуют любые не специальные символы (от двух до 20-и) без пробелов)');
+    } else {
+      inputHashtags.setCustomValidity(''); // очищаем сообщение об ошибке
+    }
   }
 });
