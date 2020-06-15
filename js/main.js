@@ -93,11 +93,6 @@ var renderPicture = function (picture) {
   pictureElement.querySelector('.picture__comments').textContent = getRandomInRange(AmountComments.MIN, AmountComments.MAX);
   pictureElement.addEventListener('click', function () {
     renderBigPicture(picture);
-    document.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Escape') {
-        closePopupBigPicture();
-      }
-    });
   });
   closeBigPicture.addEventListener('click', function () {
     closePopupBigPicture();
@@ -140,6 +135,12 @@ var renderBigPicture = function (picture) {
   }
   bigPicture.querySelector('.social__comments').appendChild(fragment);
   openPopupBigPicture();
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape') {
+      closePopupBigPicture();
+    }
+  });
 };
 
 var init = function () {
@@ -246,25 +247,22 @@ submitForm.addEventListener('click', function () {
   var pattern = /^#[a-zA-Zа-яА-ЯёЁ0-9]{2,20}$/; // регулярное выражение для проверки валидации хэштега
   var sortedHashtags = arrHashtags.slice().sort(); // сортируем и проверям хэштеги на совпадение
 
-  inputHashtags.setCustomValidity(''); // очищаем сообщение об ошибке
-
   if (arrHashtags.length > MAX_QUANTITY_HASHTAGS) { // проверям количество ввведенных хэштегов
     inputHashtags.setCustomValidity('Количество хэштегов не должно быть больше ' + MAX_QUANTITY_HASHTAGS);
   }
 
-  for (var i = 0; i < arrHashtags.length; i++) { // проверяем соответствие шаблону ^#[a-zA-Zа-яА-ЯёЁ0-9]{2,20}$
-    var hashtag = arrHashtags[i];
+  for (var j = 0; j < sortedHashtags.length; j++) {
+    var hashtag = sortedHashtags[j];
+    if (hashtag === sortedHashtags[j + 1]) { // проверяем на одинаковые хэштеги
+      inputHashtags.setCustomValidity('Необходимо удалить хэштег ' + hashtag + ' т.к. он уже используется');
+    }
+    if (hashtag.length > MAX_HASHTAG_LENGTH) { // проверяем длину одного хэштега
+      inputHashtags.setCustomValidity('Количество символов в хэштеге не должно превышать ' + MAX_HASHTAG_LENGTH);
+    }
     if (!pattern.test(hashtag)) {
       inputHashtags.setCustomValidity('Хэштег "' + hashtag + '" должен соответствовать шаблону: символ #, за которым следуют любые не специальные символы (от двух до 20-и) без пробелов)');
-    }
-  }
-
-  for (var j = 0; j < sortedHashtags.length; j++) {
-    if (sortedHashtags[j] === sortedHashtags[j + 1]) { // проверяем на одинаковые хэштеги
-      inputHashtags.setCustomValidity('Необходимо удалить хэштег ' + sortedHashtags[j] + ' т.к. он уже используется');
-    }
-    if (sortedHashtags[j].length > MAX_HASHTAG_LENGTH) { // проверяем длину одного хэштега
-      inputHashtags.setCustomValidity('Количество символов в хэштеге не должно превышать ' + MAX_HASHTAG_LENGTH);
+    } else {
+      inputHashtags.setCustomValidity(''); // очищаем сообщение об ошибке
     }
   }
 });
