@@ -25,24 +25,10 @@
   var socialCommentCount = document.querySelector('.social__comment-count');
   var commentsLoader = document.querySelector('.comments-loader');
 
-  // -------- случайное число в диапазоне --------
-
-  // var getRandomInRange = function (min, max) {
-  //   return Math.floor(Math.random() * (max - min + 1)) + min;
-  // };
-
-  // // -------- случайный элемент массива --------
-
-  // var getRandomArray = function (array) {
-  //   var randomIndex = Math.floor(Math.random() * array.length);
-  //   var required = array[randomIndex];
-  //   return required;
-  // };
-
   // -------- случайный аватар для комментария --------
 
   var getRandomAvatar = function () {
-    var randomAvatar = 'img/avatar-' + window.randomize.getRandomInRange(1, AMOUNT_AVATARS) + '.svg';
+    var randomAvatar = 'img/avatar-' + window.util.getRandomInRange(1, AMOUNT_AVATARS) + '.svg';
     return randomAvatar;
   };
 
@@ -53,8 +39,8 @@
     for (var i = 0; i < amount; i++) {
       randomComments.push({
         avatar: getRandomAvatar(),
-        message: window.randomize.getRandomArray(messages),
-        name: window.randomize.getRandomArray(userNames)
+        message: window.util.getRandomArray(messages),
+        name: window.util.getRandomArray(userNames)
       });
     }
     return randomComments;
@@ -68,8 +54,8 @@
       objects.push({
         url: 'photos/' + i + '.jpg',
         description: 'Lorem ipsum dolor sit amet.',
-        likes: window.randomize.getRandomInRange(AmountLikes.MIN, AmountLikes.MAX),
-        comments: generateRandomComments(window.randomize.getRandomInRange(AmountComments.MIN, AmountComments.MAX))
+        likes: window.util.getRandomInRange(AmountLikes.MIN, AmountLikes.MAX),
+        comments: generateRandomComments(window.util.getRandomInRange(AmountComments.MIN, AmountComments.MAX))
       });
     }
     return objects;
@@ -91,7 +77,7 @@
 
     pictureElement.querySelector('.picture__img').src = picture.url;
     pictureElement.querySelector('.picture__likes').textContent = picture.likes;
-    pictureElement.querySelector('.picture__comments').textContent = window.randomize.getRandomInRange(AmountComments.MIN, AmountComments.MAX);
+    pictureElement.querySelector('.picture__comments').textContent = window.util.getRandomInRange(AmountComments.MIN, AmountComments.MAX);
     pictureElement.addEventListener('click', function () {
       renderBigPicture(picture);
     });
@@ -136,13 +122,13 @@
     }
     bigPicture.querySelector('.social__comments').appendChild(fragment);
     openPopupBigPicture();
-
-    document.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Escape') {
-        closePopupBigPicture();
-      }
-    });
   };
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape') {
+      closePopupBigPicture();
+    }
+  });
 
   var init = function () {
     var pictures = generateRandomObjects();
@@ -151,5 +137,7 @@
     commentsLoader.classList.add('hidden');
   };
 
-  init();
+  window.addEventListener('load', function () {
+    init();
+  });
 })();

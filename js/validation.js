@@ -2,10 +2,10 @@
 
 // -------- Валидация хеш-тегов --------
 (function () {
-  var formEditImage = document.querySelector('.img-upload__overlay');
-  var inputHashtags = formEditImage.querySelector('.text__hashtags');
   var MAX_QUANTITY_HASHTAGS = 5;
   var MAX_HASHTAG_LENGTH = 20;
+  var formEditImage = document.querySelector('.img-upload__overlay');
+  var inputHashtags = formEditImage.querySelector('.text__hashtags');
 
   inputHashtags.addEventListener('input', function () {
     var arrHashtags = inputHashtags.value.toLowerCase().split(' '); // формируем массив из хэштегов

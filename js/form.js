@@ -3,9 +3,7 @@
 // -------- Загрузка изображения и показ формы редактирования --------
 
 (function () {
-  var MAX_SCALE = 100;
-  var scaleValueNumber = MAX_SCALE;
-
+  var scaleValueNumber = window.util.MAX_SCALE;
   var form = document.querySelector('.img-upload__form');
   var openFormButton = document.querySelector('#upload-file');
   var closeFormCross = document.querySelector('#upload-cancel');
@@ -19,7 +17,7 @@
 
   var defaultScale = function () {
     image.style.transform = 'scale(1)';
-    scaleValueNumber = MAX_SCALE;
+    scaleValueNumber = window.util.MAX_SCALE;
     scaleValue.value = scaleValueNumber + '%';
   };
 

@@ -3,6 +3,7 @@
 // -------- Применение эффекта для изображения и редактирование размера изображения --------
 
 (function () {
+  var STEP_SCALE = 25;
   var effectsList = document.querySelector('.effects__list');
   var formEditImage = document.querySelector('.img-upload__overlay');
   var imgPreview = formEditImage.querySelector('.img-upload__preview');
@@ -11,8 +12,7 @@
   var scaleValue = formEditImage.querySelector('.scale__control--value');
   var scaleSmaller = formEditImage.querySelector('.scale__control--smaller');
   var scaleBigger = formEditImage.querySelector('.scale__control--bigger');
-  var MAX_SCALE = 100;
-  var scaleValueNumber = MAX_SCALE;
+  var scaleValueNumber = window.util.MAX_SCALE;
 
   effectsList.addEventListener('change', function (evt) {
     var required = 'effects__preview--' + evt.target.value;
@@ -25,7 +25,7 @@
 
   var lessScale = function () {
     if (scaleValueNumber > 0 && scaleValueNumber <= 100) {
-      scaleValueNumber -= 25;
+      scaleValueNumber -= STEP_SCALE;
       image.style.transform = 'scale(' + (scaleValueNumber / 100) + ')';
       scaleValue.value = scaleValueNumber + '%';
     }
@@ -33,7 +33,7 @@
 
   var moreScale = function () {
     if (scaleValueNumber >= 0 && scaleValueNumber < 100) {
-      scaleValueNumber += 25;
+      scaleValueNumber += STEP_SCALE;
       image.style.transform = 'scale(' + (scaleValueNumber / 100) + ')';
       scaleValue.value = scaleValueNumber + '%';
     }
