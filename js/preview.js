@@ -122,13 +122,13 @@
     }
     bigPicture.querySelector('.social__comments').appendChild(fragment);
     openPopupBigPicture();
+    document.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Escape') {
+        closePopupBigPicture();
+      }
+    });
   };
 
-  document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape') {
-      closePopupBigPicture();
-    }
-  });
 
   var init = function () {
     var pictures = generateRandomObjects();
