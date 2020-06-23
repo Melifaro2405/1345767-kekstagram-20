@@ -14,6 +14,7 @@
   var inputHashtags = formEditImage.querySelector('.text__hashtags');
   var textDescription = formEditImage.querySelector('.text__description');
   var currentEffect = '';
+  var effectLevelControl = formEditImage.querySelector('.effect-level');
 
   var defaultScale = function () {
     image.style.transform = 'scale(1)';
@@ -21,18 +22,22 @@
     scaleValue.value = scaleValueNumber + '%';
   };
 
+  var closeForm = function (evt) {
+    if (evt.key === 'Escape' && currentEffect && inputHashtags !== document.activeElement && textDescription !== document.activeElement) {
+      formEditImage.classList.add('hidden');
+      form.reset();
+      imgPreview.classList.remove(currentEffect);
+      defaultScale();
+      document.removeEventListener('keydown', closeForm);
+    }
+  };
+
   openFormButton.addEventListener('change', function () {
     scaleValue.value = scaleValueNumber + '%';
     formEditImage.classList.remove('hidden');
     document.body.classList.add('modal-open');
-    document.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Escape' && currentEffect && inputHashtags !== document.activeElement && textDescription !== document.activeElement) {
-        formEditImage.classList.add('hidden');
-        form.reset();
-        imgPreview.classList.remove(currentEffect);
-        defaultScale();
-      }
-    });
+    effectLevelControl.classList.add('hidden');
+    document.addEventListener('keydown', closeForm);
   });
 
   closeFormCross.addEventListener('click', function () {

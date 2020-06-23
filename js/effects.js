@@ -13,18 +13,27 @@
   var scaleSmaller = formEditImage.querySelector('.scale__control--smaller');
   var scaleBigger = formEditImage.querySelector('.scale__control--bigger');
   var scaleValueNumber = window.util.MAX_SCALE;
+  var effectLevelControl = formEditImage.querySelector('.effect-level');
 
   effectsList.addEventListener('change', function (evt) {
     var required = 'effects__preview--' + evt.target.value;
+    imgPreview.removeAttribute('style');
+    window.slider.setDefaultPosition();
+
     if (currentEffect) {
       imgPreview.classList.remove(currentEffect);
     }
     imgPreview.classList.add(required);
     currentEffect = required;
+    if (evt.target.value === 'none') {
+      effectLevelControl.classList.add('hidden');
+    } else {
+      effectLevelControl.classList.remove('hidden');
+    }
   });
 
   var lessScale = function () {
-    if (scaleValueNumber > 0 && scaleValueNumber <= 100) {
+    if (scaleValueNumber > STEP_SCALE && scaleValueNumber <= 100) {
       scaleValueNumber -= STEP_SCALE;
       image.style.transform = 'scale(' + (scaleValueNumber / 100) + ')';
       scaleValue.value = scaleValueNumber + '%';
@@ -32,7 +41,7 @@
   };
 
   var moreScale = function () {
-    if (scaleValueNumber >= 0 && scaleValueNumber < 100) {
+    if (scaleValueNumber >= STEP_SCALE && scaleValueNumber < 100) {
       scaleValueNumber += STEP_SCALE;
       image.style.transform = 'scale(' + (scaleValueNumber / 100) + ')';
       scaleValue.value = scaleValueNumber + '%';
