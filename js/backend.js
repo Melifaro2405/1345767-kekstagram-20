@@ -3,8 +3,10 @@
 // ------------------ Настройка для отправки и получения данных с сервера ------------------
 
 (function () {
-  var URL_DATA = 'https://javascript.pages.academy/kekstagram/data';
-  var URL = 'https://javascript.pages.academy/code-and-magick';
+  var URL = {
+    GET: 'https://javascript.pages.academy/kekstagram/data',
+    POST: 'https://javascript.pages.academy/kekstagram'
+  };
   var TIMEOUT_IN_MS = 10000;
   var StatusCode = {
     OK: 200
@@ -35,7 +37,7 @@
 
   var load = function (onLoad, onError) {
     var xhr = sendRequest(onLoad, onError);
-    xhr.open('GET', URL_DATA);
+    xhr.open('GET', URL.GET);
     xhr.send();
   };
 

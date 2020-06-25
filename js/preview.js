@@ -1,20 +1,6 @@
 'use strict';
 
 (function () {
-  // var AMOUNT_PHOTOS = 25;
-  // var AMOUNT_AVATARS = 6;
-
-  // var AmountComments = {
-  //   MIN: 1,
-  //   MAX: 6
-  // };
-  // var AmountLikes = {
-  //   MIN: 15,
-  //   MAX: 200
-  // };
-
-  // var userNames = ['Бернард', 'Викентий', 'Корнелий', 'Емельян', 'Федот', 'Макар', 'Харитон', 'Тимон', 'Фекла', 'Авдотья'];
-  // var messages = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 
   var picturesContainer = document.querySelector('.pictures');
   var pictureTemplate = document.querySelector('#picture')
@@ -24,42 +10,6 @@
   var closeBigPicture = bigPicture.querySelector('.big-picture__cancel');
   var socialCommentCount = document.querySelector('.social__comment-count');
   var commentsLoader = document.querySelector('.comments-loader');
-
-  // -------- случайный аватар для комментария --------
-
-  // var getRandomAvatar = function () {
-  //   var randomAvatar = 'img/avatar-' + window.util.getRandomInRange(1, AMOUNT_AVATARS) + '.svg';
-  //   return randomAvatar;
-  // };
-
-  // -------- создаем массив объектов с комментариями --------
-
-  // var generateRandomComments = function (amount) {
-  //   var randomComments = [];
-  //   for (var i = 0; i < amount; i++) {
-  //     randomComments.push({
-  //       avatar: getRandomAvatar(),
-  //       message: window.util.getRandomArray(messages),
-  //       name: window.util.getRandomArray(userNames)
-  //     });
-  //   }
-  //   return randomComments;
-  // };
-
-  // -------- создаем массив превью фотографий --------
-
-  // var generateRandomObjects = function () {
-  //   var objects = [];
-  //   for (var i = 1; i <= AMOUNT_PHOTOS; i++) {
-  //     objects.push({
-  //       url: 'photos/' + i + '.jpg',
-  //       description: 'Lorem ipsum dolor sit amet.',
-  //       likes: window.util.getRandomInRange(AmountLikes.MIN, AmountLikes.MAX),
-  //       comments: generateRandomComments(window.util.getRandomInRange(AmountComments.MIN, AmountComments.MAX))
-  //     });
-  //   }
-  //   return objects;
-  // };
 
   // -------- отрисовываем превью фото с адресом, лайками и комментариями --------
 
@@ -129,7 +79,6 @@
       }
     });
   };
-
 
   var init = function () {
     window.backend.load(function (pictures) {
