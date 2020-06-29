@@ -5,7 +5,7 @@
 (function () {
   var URL = {
     GET: 'https://javascript.pages.academy/kekstagram/data',
-    POST: 'https://javascript.pages.academy/kekstagram'
+    POST: 'https://javascript.pages.academy/kekstagram1'
   };
   var TIMEOUT_IN_MS = 10000;
   var StatusCode = {
@@ -44,7 +44,7 @@
   var save = function (data, onLoad, onError) {
     var xhr = sendRequest(onLoad, onError);
 
-    xhr.open('POST', URL);
+    xhr.open('POST', URL.POST);
     xhr.send(data);
   };
 

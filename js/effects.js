@@ -20,17 +20,30 @@
     imgPreview.removeAttribute('style');
     window.slider.setDefaultPosition();
 
-    if (currentEffect) {
-      imgPreview.classList.remove(currentEffect);
+    if (window.effects.currentEffect) {
+      imgPreview.classList.remove(window.effects.currentEffect);
     }
     imgPreview.classList.add(required);
-    currentEffect = required;
+    window.effects.currentEffect = required;
     if (evt.target.value === 'none') {
       effectLevelControl.classList.add('hidden');
     } else {
       effectLevelControl.classList.remove('hidden');
     }
   });
+
+  var resetEffects = function () {
+    if (window.effects.currentEffect) {
+      imgPreview.classList.remove(window.effects.currentEffect);
+    }
+    imgPreview.removeAttribute('style');
+  };
+
+  var defaultScale = function () {
+    image.style.transform = 'scale(1)';
+    scaleValueNumber = window.util.MAX_SCALE;
+    scaleValue.value = scaleValueNumber + '%';
+  };
 
   var lessScale = function () {
     if (scaleValueNumber > STEP_SCALE && scaleValueNumber <= 100) {
@@ -55,4 +68,10 @@
   scaleBigger.addEventListener('click', function () {
     moreScale();
   });
+
+  window.effects = {
+    currentEffect: currentEffect,
+    defaultScale: defaultScale,
+    resetEffects: resetEffects
+  };
 })();
