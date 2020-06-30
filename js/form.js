@@ -83,7 +83,7 @@
     successSubmitMessage();
   };
 
-  var errorSubmitMessage = function (messageError) {
+  var onError = function (messageError) {
     var templateErrorWindow = document.querySelector('#error')
       .content
       .querySelector('.error');
@@ -107,20 +107,9 @@
       }
     };
 
-    // var errorButton = errorWindow.querySelector('.error__button');
-
-    // var onErrorButtonClick = function () {
-    //   closeErrorWindow();
-    // };
-
-    // errorButton.addEventListener('click', onErrorButtonClick);
     errorWindow.addEventListener('click', onErrorWindowClick);
     document.addEventListener('keydown', onErrorWindowEsc);
 
-  };
-
-  var onError = function () {
-    errorSubmitMessage();
     closePopup();
     resetForm();
   };

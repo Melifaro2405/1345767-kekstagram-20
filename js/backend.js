@@ -5,7 +5,7 @@
 (function () {
   var URL = {
     GET: 'https://javascript.pages.academy/kekstagram/data',
-    POST: 'https://javascript.pages.academy/kekstagram1'
+    POST: 'https://javascript.pages.academy/kekstagram'
   };
   var TIMEOUT_IN_MS = 10000;
   var StatusCode = {
