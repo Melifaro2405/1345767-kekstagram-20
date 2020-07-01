@@ -44,7 +44,7 @@
   var save = function (data, onLoad, onError) {
     var xhr = sendRequest(onLoad, onError);
 
-    xhr.open('POST', URL);
+    xhr.open('POST', URL.POST);
     xhr.send(data);
   };
 
