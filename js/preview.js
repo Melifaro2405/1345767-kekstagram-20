@@ -10,6 +10,9 @@
   var closeBigPicture = bigPicture.querySelector('.big-picture__cancel');
   var socialCommentCount = document.querySelector('.social__comment-count');
   var commentsLoader = document.querySelector('.comments-loader');
+  var imageFiltres = document.querySelector('.img-filters');
+  var pictures = document.querySelector('.pictures');
+  var picturesStorage = [];
 
   // -------- отрисовываем превью фото с адресом, лайками и комментариями --------
 
@@ -38,9 +41,16 @@
     return pictureElement;
   };
 
+  var clearPictures = function () {
+    pictures.querySelectorAll('.picture').forEach(function (picture) {
+      picture.remove();
+    });
+  };
+
   // -------- отображаем превью фотографий на странице --------
 
   var drewPicture = function (objects) {
+    clearPictures();
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < objects.length; i++) {
       fragment.appendChild(renderPicture(objects[i]));
@@ -80,16 +90,40 @@
     });
   };
 
+  var useFilter = function (filter) {
+    var photos = picturesStorage.slice();
+    switch (filter) {
+      case 'filter-random':
+        photos = window.util.getRandomArray(photos);
+        break;
+      case 'filter-discussed':
+        photos.sort(function (a, b) {
+          return b.comments.length - a.comments.length;
+        });
+        break;
+      default: break;
+    }
+    drewPicture(photos);
+  };
+
+  var useFilterDebounce = window.debounce(useFilter);
+
   var init = function () {
-    window.backend.load(function (pictures) {
-      drewPicture(pictures);
-      socialCommentCount.classList.add('hidden');
-      commentsLoader.classList.add('hidden');
+    window.backend.load(function (allPictures) {
+      picturesStorage = allPictures;
+      drewPicture(allPictures);
     });
+    socialCommentCount.classList.add('hidden');
+    commentsLoader.classList.add('hidden');
+    imageFiltres.classList.remove('img-filters--inactive');
   };
 
   window.addEventListener('load', function () {
     init();
   });
+
+  window.preview = {
+    useFilterDebounce: useFilterDebounce
+  };
 
 })();
