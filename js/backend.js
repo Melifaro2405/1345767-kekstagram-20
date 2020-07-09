@@ -3,7 +3,7 @@
 // ------------------ Настройка для отправки и получения данных с сервера ------------------
 
 (function () {
-  var URL = {
+  var Url = {
     GET: 'https://javascript.pages.academy/kekstagram/data',
     POST: 'https://javascript.pages.academy/kekstagram'
   };
@@ -37,14 +37,14 @@
 
   var load = function (onLoad, onError) {
     var xhr = sendRequest(onLoad, onError);
-    xhr.open('GET', URL.GET);
+    xhr.open('GET', Url.GET);
     xhr.send();
   };
 
   var save = function (data, onLoad, onError) {
     var xhr = sendRequest(onLoad, onError);
 
-    xhr.open('POST', URL.POST);
+    xhr.open('POST', Url.POST);
     xhr.send(data);
   };
 
