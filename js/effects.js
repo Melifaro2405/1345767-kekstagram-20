@@ -39,7 +39,7 @@
     imgPreview.removeAttribute('style');
   };
 
-  var defaultScale = function () {
+  var setDefaultScale = function () {
     image.style.transform = 'scale(1)';
     scaleValueNumber = window.util.MAX_SCALE;
     scaleValue.value = scaleValueNumber + '%';
@@ -71,7 +71,7 @@
 
   window.effects = {
     currentEffect: currentEffect,
-    defaultScale: defaultScale,
+    defaultScale: setDefaultScale,
     resetEffects: resetEffects
   };
 })();

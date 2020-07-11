@@ -30,7 +30,7 @@
   };
 
   var closeForm = function (evt) {
-    if (evt.key === 'Escape' && window.effects.currentEffect && inputHashtags !== document.activeElement && textDescription !== document.activeElement) {
+    if (evt.key === 'Escape' && inputHashtags !== document.activeElement && textDescription !== document.activeElement) {
       closePopup();
       resetForm();
       document.removeEventListener('keydown', closeForm);

@@ -54,9 +54,9 @@
   var drewPicture = function (objects) {
     clearPictures();
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < objects.length; i++) {
-      fragment.appendChild(renderPicture(objects[i]));
-    }
+    objects.forEach(function (item) {
+      fragment.appendChild(renderPicture(item));
+    });
     picturesContainer.appendChild(fragment);
   };
 
@@ -92,14 +92,15 @@
       var countComments = count + COMMENTS_AT_A_TIME;
       var comments = picture.comments.slice(count, countComments);
       var commentsFragment = document.createDocumentFragment();
-      for (var i = 0; i < comments.length; i++) {
-        commentsFragment.appendChild(renderSocialComment(picture.comments[i], socialComment));
-      }
+      comments.forEach(function (comment) {
+        commentsFragment.appendChild(renderSocialComment(comment, socialComment));
+      });
       commentsContainer.appendChild(commentsFragment);
       if ((countComments) >= picture.comments.length) {
         commentsLoader.classList.add('hidden');
       }
       setNumerationComments(countComments, picture.comments.length);
+      commentsLoader.removeEventListener('keydown', drewComments);
     };
     commentsLoader.addEventListener('click', drewComments);
 
