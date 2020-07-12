@@ -12,7 +12,7 @@
   var socialCommentCount = document.querySelector('.social__comment-count');
   var commentsLoader = document.querySelector('.comments-loader');
   var commentsContainer = bigPicture.querySelector('.social__comments');
-  var imageFiltres = document.querySelector('.img-filters');
+  var imageFilter = document.querySelector('.img-filters');
   var pictures = document.querySelector('.pictures');
   var picturesStorage = [];
 
@@ -87,7 +87,7 @@
     bigPicture.querySelector('.likes-count').textContent = picture.likes;
     bigPicture.querySelector('.social__caption').textContent = picture.description;
 
-    var drewComments = function () {
+    var onCommentsDrew = function () {
       var count = COMMENTS_AT_A_TIME * countOfClicks++;
       var countComments = count + COMMENTS_AT_A_TIME;
       var comments = picture.comments.slice(count, countComments);
@@ -100,28 +100,28 @@
         commentsLoader.classList.add('hidden');
       }
       setNumerationComments(countComments, picture.comments.length);
-      commentsLoader.removeEventListener('keydown', drewComments);
+      commentsLoader.removeEventListener('keydown', onCommentsDrew);
     };
-    commentsLoader.addEventListener('click', drewComments);
+    commentsLoader.addEventListener('click', onCommentsDrew);
 
     if (picture.comments.length > 0) {
       commentsContainer.innerHTML = '';
     }
     commentsLoader.classList.remove('hidden');
 
-    drewComments();
+    onCommentsDrew();
     openPopupBigPicture();
 
     document.addEventListener('keydown', function (evt) {
       if (evt.key === 'Escape') {
         closePopupBigPicture();
-        commentsLoader.removeEventListener('click', drewComments);
+        commentsLoader.removeEventListener('click', onCommentsDrew);
       }
     });
 
     closeBigPicture.addEventListener('click', function () {
       closePopupBigPicture();
-      commentsLoader.removeEventListener('click', drewComments);
+      commentsLoader.removeEventListener('click', onCommentsDrew);
     });
   };
 
@@ -146,7 +146,7 @@
       picturesStorage = allPictures;
       drewPicture(allPictures);
     });
-    imageFiltres.classList.remove('img-filters--inactive');
+    imageFilter.classList.remove('img-filters--inactive');
   };
 
   window.addEventListener('load', function () {

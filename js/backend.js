@@ -3,11 +3,11 @@
 // ------------------ Настройка для отправки и получения данных с сервера ------------------
 
 (function () {
+  var TIMEOUT_IN_MS = 10000;
   var Url = {
     GET: 'https://javascript.pages.academy/kekstagram/data',
     POST: 'https://javascript.pages.academy/kekstagram'
   };
-  var TIMEOUT_IN_MS = 10000;
   var StatusCode = {
     OK: 200
   };

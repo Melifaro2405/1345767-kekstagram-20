@@ -25,15 +25,15 @@
 
   var resetForm = function () {
     form.reset();
-    window.effects.defaultScale();
-    window.effects.resetEffects();
+    window.effects.setDefaultScale();
+    window.effects.reset();
   };
 
-  var closeForm = function (evt) {
+  var onFormClose = function (evt) {
     if (evt.key === 'Escape' && inputHashtags !== document.activeElement && textDescription !== document.activeElement) {
       closePopup();
       resetForm();
-      document.removeEventListener('keydown', closeForm);
+      document.removeEventListener('keydown', onFormClose);
     }
   };
 
@@ -41,7 +41,7 @@
     openPopup();
     scaleValue.value = window.util.MAX_SCALE + '%';
     effectLevelControl.classList.add('hidden');
-    document.addEventListener('keydown', closeForm);
+    document.addEventListener('keydown', onFormClose);
   });
 
   closeFormCross.addEventListener('click', function () {

@@ -20,11 +20,11 @@
     imgPreview.removeAttribute('style');
     window.slider.setDefaultPosition();
 
-    if (window.effects.currentEffect) {
-      imgPreview.classList.remove(window.effects.currentEffect);
+    if (window.effects.setCurrentEffect) {
+      imgPreview.classList.remove(window.effects.setCurrentEffect);
     }
     imgPreview.classList.add(required);
-    window.effects.currentEffect = required;
+    window.effects.setCurrentEffect = required;
     if (evt.target.value === 'none') {
       effectLevelControl.classList.add('hidden');
     } else {
@@ -32,9 +32,9 @@
     }
   });
 
-  var resetEffects = function () {
-    if (window.effects.currentEffect) {
-      imgPreview.classList.remove(window.effects.currentEffect);
+  var reset = function () {
+    if (window.effects.setCurrentEffect) {
+      imgPreview.classList.remove(window.effects.setCurrentEffect);
     }
     imgPreview.removeAttribute('style');
   };
@@ -45,7 +45,7 @@
     scaleValue.value = scaleValueNumber + '%';
   };
 
-  var lessScale = function () {
+  var reduceScale = function () {
     if (scaleValueNumber > STEP_SCALE && scaleValueNumber <= 100) {
       scaleValueNumber -= STEP_SCALE;
       image.style.transform = 'scale(' + (scaleValueNumber / 100) + ')';
@@ -53,7 +53,7 @@
     }
   };
 
-  var moreScale = function () {
+  var addScale = function () {
     if (scaleValueNumber >= STEP_SCALE && scaleValueNumber < 100) {
       scaleValueNumber += STEP_SCALE;
       image.style.transform = 'scale(' + (scaleValueNumber / 100) + ')';
@@ -62,16 +62,16 @@
   };
 
   scaleSmaller.addEventListener('click', function () {
-    lessScale();
+    reduceScale();
   });
 
   scaleBigger.addEventListener('click', function () {
-    moreScale();
+    addScale();
   });
 
   window.effects = {
-    currentEffect: currentEffect,
-    defaultScale: setDefaultScale,
-    resetEffects: resetEffects
+    current: currentEffect,
+    setDefaultScale: setDefaultScale,
+    reset: reset
   };
 })();

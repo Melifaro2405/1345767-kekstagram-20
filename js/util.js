@@ -15,16 +15,16 @@
   var getRandomArray = function (array) {
     return window.util.shuffle(array).slice(0, TOTAL_PHOTOS);
   };
-  var shuffle = function (arr) {
+  var shuffle = function (elements) {
     var j;
     var temp;
-    for (var i = arr.length - 1; i > 0; i--) {
+    for (var i = elements.length - 1; i > 0; i--) {
       j = Math.floor(Math.random() * (i + 1));
-      temp = arr[j];
-      arr[j] = arr[i];
-      arr[i] = temp;
+      temp = elements[j];
+      elements[j] = elements[i];
+      elements[i] = temp;
     }
-    return arr;
+    return elements;
   };
 
   window.util = {
