@@ -87,7 +87,7 @@
     bigPicture.querySelector('.likes-count').textContent = picture.likes;
     bigPicture.querySelector('.social__caption').textContent = picture.description;
 
-    var onCommentsDrew = function () {
+    var drewComments = function () {
       var count = COMMENTS_AT_A_TIME * countOfClicks++;
       var countComments = count + COMMENTS_AT_A_TIME;
       var comments = picture.comments.slice(count, countComments);
@@ -100,28 +100,32 @@
         commentsLoader.classList.add('hidden');
       }
       setNumerationComments(countComments, picture.comments.length);
-      commentsLoader.removeEventListener('keydown', onCommentsDrew);
     };
-    commentsLoader.addEventListener('click', onCommentsDrew);
+
+    var onCommentsLoaderClick = function () {
+      drewComments();
+    };
+
+    commentsLoader.addEventListener('click', onCommentsLoaderClick);
 
     if (picture.comments.length > 0) {
       commentsContainer.innerHTML = '';
     }
     commentsLoader.classList.remove('hidden');
 
-    onCommentsDrew();
+    drewComments();
     openPopupBigPicture();
 
     document.addEventListener('keydown', function (evt) {
       if (evt.key === 'Escape') {
         closePopupBigPicture();
-        commentsLoader.removeEventListener('click', onCommentsDrew);
+        commentsLoader.removeEventListener('click', onCommentsLoaderClick);
       }
     });
 
     closeBigPicture.addEventListener('click', function () {
       closePopupBigPicture();
-      commentsLoader.removeEventListener('click', onCommentsDrew);
+      commentsLoader.removeEventListener('click', onCommentsLoaderClick);
     });
   };
 
